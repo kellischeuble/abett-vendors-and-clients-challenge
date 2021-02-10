@@ -10,6 +10,7 @@ requests = "*"
 fastapi = "*"
 uvicorn = "*"
 pytest = "*"
+neo4j = "*"
 
 [requires]
 python_version = "3.8"
