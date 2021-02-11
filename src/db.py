@@ -2,6 +2,10 @@ from neo4j import GraphDatabase
 from neo4j.exceptions import ServiceUnavailable
 import logging
 
+# TODO: the methods that do not have an _ are repetitive.. 
+# there's definitely a way to create one method so that I don't
+# have to repeat that code
+
 class Commands:
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
