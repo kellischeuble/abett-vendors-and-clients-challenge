@@ -8,8 +8,8 @@
 
 create virtual environment with pipenv
 
-`pip install pipenv`
-`pipenv install -r requirements.txt`
+`pip install pipenv`  
+`pipenv install -r requirements.txt`  
 `pipenv shell`
 
 or from your own virtual environment with Python 3.8 using
@@ -38,7 +38,10 @@ Go to
 
 ### Assumptions Made
 ```
-Thought that using a graph datastore would be the easiest way to go about this problem. I have never used a graph datastore before, and have heard good things about Neo4j and thought it looked pretty straight forward. 
+I thought that using a graph datastore would be the easiest way to go about this problem
+based on the types of connections between vendors and clients. 
+I have never used a graph datastore before and thought Neo4j would be a more simple one
+to implement. 
 ```
 
 ### Future Considerations
