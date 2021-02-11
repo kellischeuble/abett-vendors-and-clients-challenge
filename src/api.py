@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from src.db import Commands
 
-#from neo4j import GraphDatabase
+
 uri = "bolt://localhost:7687"
 user = "neo4j"
 password = "abcd1234"
