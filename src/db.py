@@ -2,7 +2,7 @@ from neo4j import GraphDatabase
 from neo4j.exceptions import ServiceUnavailable
 import logging
 
-# TODO: the methods that do not have an _ are repetitive.. 
+# TODO: these methods are repetitive.. 
 # there's definitely a way to create one method so that I don't
 # have to repeat that code
 
@@ -11,7 +11,9 @@ class Commands:
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
     def close(self):
-        """ closes the driver connection """
+        """
+        Method to close driver connection
+        """
         self.driver.close()           
 
     def create_vendor(self, vendor_name):
@@ -184,7 +186,17 @@ class Commands:
             
 
     @staticmethod
-    def _add_client_vendor_transfer(tx, vendor_name, client_name, direction, frequency):
+    def _add_client_vendor_transfer(tx, vendor_name:str, client_name:str, direction:str, frequency:str):
+        """
+        Method with the query to add a transfer realtionship between vendor and client
+
+        Args:
+            vendor_name (str): vendor's name
+            client_name (str): client's name
+            direction (str): direction of transfer in relation to the customer -
+                            must be "in" or "out"
+            frequency (str): frequency of transfer - must be "daily", "weekly", or "monthly"
+        """
         # TODO: Also make sure that frequency is in [daily, monthly, weekly]
         if direction.lower().strip() == "in":
             query = (
@@ -216,7 +228,11 @@ class Commands:
             )
 
     @staticmethod
-    def _get_and_return_output_vendors(tx, client_name):
+    def _get_and_return_output_vendors(tx, client_name:str):
+        """
+        Mathod to return all of the vendors and outgoing relationships
+        for a given client
+        """
         query = (
             "MATCH (c:Client {name: $client_name})-[r:Transfer]->(v) "
             "RETURN * "
@@ -233,6 +249,10 @@ class Commands:
 
     @staticmethod
     def _get_and_return_input_vendors(tx, client_name):
+        """
+        Method to reutrn all of the vendors and ingoing relationships
+        for a given client
+        """
         query = (
             "MATCH (c:Client {name: $client_name})<-[r:Transfer]-(v) "
             "RETURN * "
@@ -240,14 +260,17 @@ class Commands:
         )
         return tx.run(query, client_name=client_name)
 
-    def get_delivery_schedule(self, vendor_name):
+    def get_all_vendor_connections(self, vendor_name):
         with self.driver.session() as session:
             return session.write_transaction(
-                self._get_and_return_delivery_schedule, vendor_name
+                self._get_and_return_all_connections, vendor_name
             )
 
     @staticmethod
-    def _get_and_return_delivery_schedule(tx, vendor_name):
+    def _get_and_return_all_vendor_connections(tx, vendor_name):
+        """
+        mathod to return all of the connections a vendor may have
+        """
         query = (
             "MATCH (v:Vendor {name: $vendor_name})-[r:Transfer]-(c)"
             "RETURN * "
@@ -255,3 +278,21 @@ class Commands:
             ""
         )
         return tx.run(query, vendor_name=vendor_name)
+
+    def get_all_client_connections(self, client_name):
+        with self.driver.session() as session:
+            return session.write_transaction(
+                self._get_and_return_all_connections, client_name
+            )
+
+    @staticmethod
+    def _get_and_return_all_client_connections(tx, client_name):
+        """
+        Method to return all of the connections a client may have
+        """
+        query = (
+            "MATCH (c:Client {name: $client_name})-[r:Transfer]-(v)"
+            "RETURN c"
+            ""
+        )
+        return tx.run(query, client_name=client_name)

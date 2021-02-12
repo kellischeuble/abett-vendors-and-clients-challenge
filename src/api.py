@@ -3,8 +3,8 @@ from src.db import Commands
 
 
 uri = "bolt://localhost:7687"
-user = "neo4j"
-password = "abcd1234"
+user = "{USERNAME}"
+password = "{PASSWORD}"
 
 app = FastAPI()
 
@@ -226,7 +226,7 @@ def get_delivery_schedule(vendor_name: str):
         # TODO: return error message if vendor does not exist
     """
     n = Commands(uri, user, password)
-    result = n.get_delivery_schedule(vendor_name)
+    result = n.get_all_vendor_connections(vendor_name)
     n.close()
     return result
     
@@ -243,5 +243,12 @@ def get_unique_employees(vendor_name: str) -> int:
     Returns:
         int: number of employees
         # TODO: return error message if vendor does not exist
+        # TODO: plan out JSON return structure
+        # TODO: use get_all_client_connections to return all client nodes
+        # TODO: iterate over them and reformat to add up customers
     """
-    pass
+    n = Commands(uri, user, password)
+    result = n.all_client_connections(vendor_name)
+    n.close()
+    return result
+    
