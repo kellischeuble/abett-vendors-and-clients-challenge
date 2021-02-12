@@ -41,7 +41,7 @@ Go to
 
 ### Future TODOs:
 ```
-- Error handeling - right now this code assumes that the user
+- Error handling - right now this code assumes that the user
     will be interacting with the api perfectly 
 - Testing - test all endpoints, all logic (especially the queries)
 - Logging
