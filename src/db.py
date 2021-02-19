@@ -198,6 +198,7 @@ class Commands:
             frequency (str): frequency of transfer - must be "daily", "weekly", or "monthly"
         """
         # TODO: Also make sure that frequency is in [daily, monthly, weekly]
+        # TODO: Probably also want to store the actual day ??
         if direction.lower().strip() == "in":
             query = (
                 "MATCH (v:Vendor) "
@@ -230,6 +231,7 @@ class Commands:
     @staticmethod
     def _get_and_return_output_vendors(tx, client_name:str):
         """
+        For /get_vendors endpoint
         Mathod to return all of the vendors and outgoing relationships
         for a given client
         """
@@ -250,6 +252,7 @@ class Commands:
     @staticmethod
     def _get_and_return_input_vendors(tx, client_name):
         """
+        For /get_vendors endpoint
         Method to reutrn all of the vendors and ingoing relationships
         for a given client
         """
