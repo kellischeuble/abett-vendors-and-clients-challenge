@@ -3,3 +3,4 @@ fastapi
 uvicorn
 pytest
 neo4j
+black==18.5b0

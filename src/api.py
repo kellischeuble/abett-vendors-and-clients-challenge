@@ -8,12 +8,14 @@ password = "password"
 
 app = FastAPI()
 
+
 @app.get("/")
 def read_root():
     """ 
     Health check endpoint
     """
     return {"Hello": "World"}
+
 
 @app.post("/create_vendor")
 def create_vendor(vendor_name: str):
@@ -32,7 +34,8 @@ def create_vendor(vendor_name: str):
     result = n.create_vendor(vendor_name.strip().lower())
     n.close()
     return result
-    
+
+
 @app.get("/get_vendor")
 def get_vendor(vendor_name: str):
     """
@@ -50,6 +53,7 @@ def get_vendor(vendor_name: str):
     result = n.get_vendor(vendor_name)
     n.close()
     return result
+
 
 @app.post("/update_vendor")
 def update_vendor(vendor_name: str, property: str, updated_value: str):
@@ -71,6 +75,7 @@ def update_vendor(vendor_name: str, property: str, updated_value: str):
     n.close()
     return result
 
+
 @app.post("/delete_vendor")
 def delete_vendor(vendor_name: str):
     """
@@ -89,7 +94,8 @@ def delete_vendor(vendor_name: str):
     n.close()
     return result
 
-@app.post("/create_client") 
+
+@app.post("/create_client")
 def create_client(client_name: str, employee_count: int):
     """
     Endpoint to create a client node
@@ -105,6 +111,7 @@ def create_client(client_name: str, employee_count: int):
     result = n.create_client(client_name, employee_count)
     n.close()
     return result
+
 
 @app.get("/get_client")
 def get_client(client_name: str):
@@ -123,6 +130,7 @@ def get_client(client_name: str):
     result = n.get_client(client_name)
     n.close()
     return result
+
 
 @app.post("/update_client")
 def update_client(client_name: str, property: str, new_value: str):
@@ -144,8 +152,9 @@ def update_client(client_name: str, property: str, new_value: str):
     n.close()
     return result
 
+
 @app.post("/delete_client")
-def delete_client(client_name:str):
+def delete_client(client_name: str):
     """
     Endpoint to delete a client node
 
@@ -162,8 +171,9 @@ def delete_client(client_name:str):
     n.close()
     return result
 
+
 @app.post("/add_relationship")
-def create_transfer(vendor_name:str, client_name:str, direction:str, frequency:str):
+def create_transfer(vendor_name: str, client_name: str, direction: str, frequency: str):
     """
     Endpoint to add a directed transfer connection between a vendor
     and a client
@@ -187,7 +197,8 @@ def create_transfer(vendor_name:str, client_name:str, direction:str, frequency:s
     n.close()
     return result
 
-@app.get("/get_vendors") 
+
+@app.get("/get_vendors")
 def get_list_of_vendors(client_name: str):
     """
     Endpoint to return all vendors for a given client
@@ -229,7 +240,7 @@ def get_delivery_schedule(vendor_name: str):
     result = n.get_all_vendor_connections(vendor_name)
     n.close()
     return result
-    
+
 
 @app.get("/unique_employees")
 def get_unique_employees(vendor_name: str) -> int:
@@ -251,4 +262,3 @@ def get_unique_employees(vendor_name: str) -> int:
     result = n.get_all_vendor_connections(vendor_name)
     n.close()
     return result
-    

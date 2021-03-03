@@ -2,11 +2,13 @@ from neo4j import GraphDatabase
 from neo4j.exceptions import ServiceUnavailable
 import logging
 
-# TODO: these methods are repetitive.. 
+# TODO: these methods are repetitive..
 # there's definitely a way to create one method so that I don't
 # have to repeat that code
 
+
 class Commands:
+
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
@@ -14,7 +16,7 @@ class Commands:
         """
         Method to close driver connection
         """
-        self.driver.close()           
+        self.driver.close()
 
     def create_vendor(self, vendor_name):
         # TODO: Make sure vendors aren't added twice
@@ -25,10 +27,7 @@ class Commands:
 
     @staticmethod
     def _create_and_return_vendor(tx, vendor_name):
-        query = (
-            "CREATE (v:Vendor {name: $vendor_name}) "
-            "RETURN v"
-        )
+        query = "CREATE (v:Vendor {name: $vendor_name}) " "RETURN v"
         result = tx.run(query, vendor_name=vendor_name)
         try:
             return [{"v": record["v"]["name"]} for record in result]
@@ -58,17 +57,11 @@ class Commands:
 
     def get_vendor(self, vendor_name):
         with self.driver.session() as session:
-            return session.write_transaction(
-                self._get_and_return_vendor, vendor_name
-            )
+            return session.write_transaction(self._get_and_return_vendor, vendor_name)
 
     @staticmethod
     def _get_and_return_vendor(tx, vendor_name):
-        query = (
-            "MATCH (v:Vendor) "
-            "WHERE v.name = $vendor_name "
-            "RETURN v"
-        )
+        query = "MATCH (v:Vendor) " "WHERE v.name = $vendor_name " "RETURN v"
         result = tx.run(query, vendor_name=vendor_name)
         try:
             return [{"v": record["v"]} for record in result]
@@ -78,17 +71,11 @@ class Commands:
 
     def get_client(self, client_name):
         with self.driver.session() as session:
-            return session.write_transaction(
-                self._get_and_return_client, client_name
-            )
+            return session.write_transaction(self._get_and_return_client, client_name)
 
     @staticmethod
     def _get_and_return_client(tx, client_name):
-        query = (
-            "MATCH (c:Client) "
-            "WHERE c.name = $client_name "
-            "RETURN c"
-        )
+        query = "MATCH (c:Client) " "WHERE c.name = $client_name " "RETURN c"
         result = tx.run(query, client_name=client_name)
         try:
             return [{"c": record["c"]} for record in result]
@@ -111,7 +98,12 @@ class Commands:
             "SET v.name = $updated_value "
             "RETURN v"
         )
-        result = tx.run(query, vendor_name=vendor_name, property=property, updated_value=updated_value)
+        result = tx.run(
+            query,
+            vendor_name=vendor_name,
+            property=property,
+            updated_value=updated_value,
+        )
         try:
             return [{"v": record["v"]} for record in result]
         except ServiceUnavailable as exception:
@@ -119,17 +111,11 @@ class Commands:
 
     def delete_vendor(self, vendor_name):
         with self.driver.session() as session:
-            return session.write_transaction(
-                self._delete_vendor, vendor_name
-            )
+            return session.write_transaction(self._delete_vendor, vendor_name)
 
     @staticmethod
     def _delete_vendor(tx, vendor_name):
-        query = (
-            "MATCH (v:Vendor) "
-            "WHERE v.name = $vendor_name "
-            "DETACH DELETE v"
-        )
+        query = "MATCH (v:Vendor) " "WHERE v.name = $vendor_name " "DETACH DELETE v"
         return tx.run(query, vendor_name=vendor_name)
 
     def update_client(self, client, property, updated_value):
@@ -155,38 +141,37 @@ class Commands:
                 "SET c.employee_count = $updated_value "
                 "RETURN c"
             )
-        result = tx.run(query, client=client, property=property, updated_value=updated_value)
+        result = tx.run(
+            query, client=client, property=property, updated_value=updated_value
+        )
         try:
             return [{"c": record["c"]} for record in result]
         except ServiceUnavailable as exception:
             raise
 
-
     def delete_client(self, client_name):
         with self.driver.session() as session:
-            return session.write_transaction(
-                self._delete_client, client_name
-            )
+            return session.write_transaction(self._delete_client, client_name)
 
     @staticmethod
     def _delete_client(tx, client_name):
-        query = (
-            "MATCH (c:Client) "
-            "WHERE c.name = $client_name "
-            "DETACH DELETE c"
-        )
+        query = "MATCH (c:Client) " "WHERE c.name = $client_name " "DETACH DELETE c"
         return tx.run(query, client_name=client_name)
 
-    
     def create_transfer(self, vendor_name, client_name, direction, frequency):
         with self.driver.session() as session:
             return session.write_transaction(
-                self._add_client_vendor_transfer, vendor_name, client_name, direction, frequency
+                self._add_client_vendor_transfer,
+                vendor_name,
+                client_name,
+                direction,
+                frequency,
             )
-            
 
     @staticmethod
-    def _add_client_vendor_transfer(tx, vendor_name:str, client_name:str, direction:str, frequency:str):
+    def _add_client_vendor_transfer(
+        tx, vendor_name: str, client_name: str, direction: str, frequency: str
+    ):
         """
         Method with the query to add a transfer realtionship between vendor and client
 
@@ -219,8 +204,13 @@ class Commands:
             )
         else:
             return "DIRECTION MUST BE 'in' or 'out'"
-        return tx.run(query, vendor_name=vendor_name, client_name=client_name, direction=direction, frequency=frequency)
-
+        return tx.run(
+            query,
+            vendor_name=vendor_name,
+            client_name=client_name,
+            direction=direction,
+            frequency=frequency,
+        )
 
     def get_list_of_output_vendors(self, client_name):
         with self.driver.session() as session:
@@ -229,7 +219,7 @@ class Commands:
             )
 
     @staticmethod
-    def _get_and_return_output_vendors(tx, client_name:str):
+    def _get_and_return_output_vendors(tx, client_name: str):
         """
         For /get_vendors endpoint
         Mathod to return all of the vendors and outgoing relationships
@@ -241,7 +231,6 @@ class Commands:
             "ORDER BY r.schedule"
         )
         return tx.run(query, client_name=client_name)
-
 
     def get_list_of_input_vendors(self, client_name):
         with self.driver.session() as session:
@@ -293,9 +282,5 @@ class Commands:
         """
         Method to return all of the connections a client may have
         """
-        query = (
-            "MATCH (c:Client {name: $client_name})-[r:Transfer]-(v)"
-            "RETURN c"
-            ""
-        )
+        query = "MATCH (c:Client {name: $client_name})-[r:Transfer]-(v)" "RETURN c" ""
         return tx.run(query, client_name=client_name)
